@@ -1,4 +1,5 @@
 const { Client } = require('whatsapp-web.js');
+const {getEvents, getClosestEvent} = require('./handler/event')
 const fs = require('fs');
 const SESSION_FILE_PATH = './session.json';
 let sessionCfg;
@@ -83,13 +84,16 @@ client.on('message', async msg => {
             break;
 
         case "/acara":
-            msg.reply("Okay, Ini dia event Fosti Terdekat...\n"+
-                "RAPAT BESAR FOSTI\n===================\n"+
-                "🗓 Hari            : JUM'AT \n" +
-                "🗒 Tanggal       : 15 JANUARI 2021\n" +
-                "🕟 Jam            : 19.00 ON TIME❤\n" +
-                "🏠 Tempat        : VIA GOOGLE MEET"
-            );
+            const events = getEvents()
+            const {title, place, timestamp, link, notes} = getClosestEvent(events)
+            msg.reply(
+            `Okay, Ini dia event Fosti Terdekat...\n
+            ⭐️ ${title}\n===================\n
+            🗒 Waktu       : ${timestamp} \n
+            🔗 Link        : ${link} \n
+            🏠 Tempat      : ${place} \n
+            🗒 Notes       : ${notes} \n
+            `);
             break;
         case "/bantuan":
             msg.reply("Okay, Aku bisa apa aja sih...\n1. Informasi Acara Fosti\n/acara\n=======\n2.Absensi\n/absen\n========\nAku juga bisa kamu Japri looh");
